@@ -98,12 +98,17 @@ app.get('/users/courses',userAuthentication, (req, res) => {
 });
 
 app.post('/users/courses/:courseId',userAuthentication, (req, res) => {
-  const alreadypurchasedCourse = COURSES.find(c=>c.courseId === courseId)
-  if (alreadypurchasedCourse){
-    res.status(403).json({message : "THE Course is already purchased"})
-  } 
+  const courseId = Number(req.params.courseId)
+  const course = COURSES.find(c=>c.id === courseId && c.published)
+  if (course){
+    req.user.purchasedCourses.push(courseId)
+    } 
+  else{
+    res.status(404).json({message : "THE Course isnot found"})
+  
   COURSES.push()
-});
+  res.json({message : "Course is succesfully purchased"})
+}});
 
 app.get('/users/purchasedCourses', (req, res) => {
   // logic to view purchased courses
