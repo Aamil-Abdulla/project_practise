@@ -102,17 +102,16 @@ app.post('/users/courses/:courseId',userAuthentication, (req, res) => {
   const course = COURSES.find(c=>c.id === courseId && c.published)
   if (course){
     req.user.purchasedCourses.push(courseId)
-    } 
+    res.json({message : "Course is succesfully purchased"})
+  } 
   else{
-    res.status(404).json({message : "THE Course isnot found"})
-  
-  COURSES.push()
-  res.json({message : "Course is succesfully purchased"})
+    res.status(404).json({message : "THE Course is not found or it is not available"})
 }});
 
-app.get('/users/purchasedCourses', (req, res) => {
-  // logic to view purchased courses
-});
+app.get('/users/purchasedCourses',userAuthentication, (req, res) => {
+  const purchasedCourses = COURSES.filter(c=>req.user.purchasedCourses.includes(c.id))
+  res.json({purchasedCourses})
+  });
 
 app.listen(3000, () => {
   console.log('Server is listening on port 3000');
