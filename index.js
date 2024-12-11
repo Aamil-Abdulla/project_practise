@@ -8,6 +8,7 @@ let USERS = [];
 let COURSES = [];
 
 function adminAuthentication(req,res,next){
+  const {username , password} = req.headers;
   const admin = ADMINS.find(a=>a.username === username && a.password === password )
   if (admin){
     next()
@@ -37,12 +38,12 @@ app.post('/admin/signup', (req, res) => {
   }
   else{
     ADMINS.push(admin)
-    res.json(201).json({message : 'it is successfully created'})
+    res.status(201).json({message : 'it is successfully created'})
   }
 });
 
 app.post('/admin/login', adminAuthentication, (req, res) => {
-  res.json({message  : " Logged in Succesfully"})
+  res.json({ "message"  : " Logged in Succesfully"})
 });
 
 app.post('/admin/courses', adminAuthentication, (req, res) => {
@@ -58,13 +59,13 @@ app.post('/admin/courses', adminAuthentication, (req, res) => {
 
 app.put('/admin/courses/:courseId',adminAuthentication,(req, res) => {
   const courseId = parseInt(req.params.courseId)
-  const course =  COURSES.find(c=>c.courseId === courseId)
+  const course =  COURSES.find(c=>c.id === courseId)
   if (course) {
     Object.assign(course,req.body)
     res.json({message: "Course updated Succesfuly" })    
   }
   else{
-    res.status(403).json("Course not found")
+    res.status(404).json("Course not found")
   }
 });
 
